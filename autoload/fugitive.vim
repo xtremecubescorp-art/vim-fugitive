@@ -4576,10 +4576,16 @@ function! s:Dispatch(bang, cmd, args) abort
 endfunction
 
 function! s:PushSubcommand(line1, line2, range, bang, mods, args) abort
+  if !a:bang
+    return {}
+  endif
   return s:Dispatch(a:bang ? '!' : '', 'push', a:args)
 endfunction
 
 function! s:FetchSubcommand(line1, line2, range, bang, mods, args) abort
+  if !a:bang
+    return {}
+  endif
   return s:Dispatch(a:bang ? '!' : '', 'fetch', a:args)
 endfunction
 
