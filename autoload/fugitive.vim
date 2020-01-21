@@ -1909,7 +1909,7 @@ function! fugitive#BufReadStatus() abort
     endfor
 
     let b:fugitive_reltime = reltime()
-    return 'silent ' . s:DoAutocmd('User FugitiveIndex')
+    return 'silent ' . s:DoAutocmd('User Fugitive') . '|silent ' . s:DoAutocmd('User FugitiveIndex')
   catch /^fugitive:/
     return 'echoerr ' . string(v:exception)
   endtry
@@ -6303,20 +6303,9 @@ function! fugitive#foldtext() abort
   return fugitive#Foldtext()
 endfunction
 
-augroup fugitive_folding
-  autocmd!
-  autocmd User Fugitive
-        \ if &filetype =~# '^git\%(commit\)\=$' && &foldtext ==# 'foldtext()' |
-        \    set foldtext=fugitive#Foldtext() |
-        \ endif
-augroup END
-
 " Section: Initialization
 
 function! fugitive#Init() abort
-  if exists('#User#FugitiveBoot')
-    exe s:DoAutocmd('User FugitiveBoot')
-  endif
   let dir = s:Dir()
   if &tags !~# '\.git' && @% !~# '\.git' && !exists('s:tags_warning')
     let actualdir = fugitive#Find('.git/', dir)
@@ -6327,7 +6316,6 @@ function! fugitive#Init() abort
       echohl NONE
     endif
   endif
-  exe s:DoAutocmd('User Fugitive')
 endfunction
 
 function! fugitive#is_git_dir(path) abort
