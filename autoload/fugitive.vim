@@ -2226,12 +2226,17 @@ function! s:RunReceive(state, job, data, ...) abort
   endif
 endfunction
 
-function! s:RunSend(job, char) abort
-  if type(a:job) == type(0)
-    call chansend(a:job, a:char)
-  else
-    call ch_sendraw(a:job, a:char)
-  endif
+function! s:RunSend(job, str) abort
+  try
+    if type(a:job) == type(0)
+      call chansend(a:job, a:str)
+    else
+      call ch_sendraw(a:job, a:str)
+    endif
+    return len(a:str)
+  catch /^Vim\%((\a\+)\)\=:E90[06]:/
+    return 0
+  endtry
 endfunction
 
 if !exists('s:edit_jobs')
